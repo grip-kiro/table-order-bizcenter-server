@@ -39,6 +39,7 @@ public class JwtTokenProvider {
     public String createRefreshToken() {
         Date now = new Date();
         return Jwts.builder()
+                .id(java.util.UUID.randomUUID().toString())
                 .issuedAt(now)
                 .expiration(new Date(now.getTime() + refreshTokenExpiry))
                 .signWith(key)
