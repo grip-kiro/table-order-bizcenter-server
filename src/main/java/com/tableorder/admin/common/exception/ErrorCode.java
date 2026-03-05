@@ -10,6 +10,7 @@ public enum ErrorCode {
 
     // Auth
     INVALID_CREDENTIALS(HttpStatus.UNAUTHORIZED, "인증 정보가 올바르지 않습니다"),
+    USERNAME_DUPLICATE(HttpStatus.CONFLICT, "이미 존재하는 사용자명입니다"),
     ACCOUNT_LOCKED(HttpStatus.LOCKED, "계정이 잠겼습니다"),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다"),
     TOKEN_REVOKED(HttpStatus.UNAUTHORIZED, "무효화된 토큰입니다"),

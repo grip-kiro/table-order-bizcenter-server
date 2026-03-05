@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface AdminAccountRepository extends JpaRepository<AdminAccount, Long> {
     Optional<AdminAccount> findByStoreIdAndUsername(Long storeId, String username);
+    boolean existsByStoreIdAndUsername(Long storeId, String username);
 }

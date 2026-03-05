@@ -1,6 +1,8 @@
 package com.tableorder.admin.auth;
 
 import com.tableorder.admin.auth.dto.AdminLoginRequest;
+import com.tableorder.admin.auth.dto.AdminRegisterRequest;
+import com.tableorder.admin.auth.dto.AdminRegisterResponse;
 import com.tableorder.admin.auth.dto.TokenResponse;
 import com.tableorder.admin.common.exception.BusinessException;
 import com.tableorder.admin.common.exception.ErrorCode;
@@ -28,6 +30,22 @@ public class AuthService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
+
+    @Transactional
+    public AdminRegisterResponse register(AdminRegisterRequest request) {
+        if (adminAccountRepository.existsByStoreIdAndUsername(request.getStoreId(), request.getUsername())) {
+            throw new BusinessException(ErrorCode.USERNAME_DUPLICATE);
+        }
+
+        AdminAccount account = AdminAccount.create(
+                request.getStoreId(),
+                request.getUsername(),
+                passwordEncoder.encode(request.getPassword())
+        );
+        account = adminAccountRepository.save(account);
+
+        return new AdminRegisterResponse(account.getId(), account.getStoreId(), account.getUsername());
+    }
 
     @Transactional
     public TokenResponse login(AdminLoginRequest request) {

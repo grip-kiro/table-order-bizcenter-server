@@ -54,6 +54,42 @@
 
 ---
 
+### POST /api/auth/admin/register
+관리자 회원가입. 매장 ID + 사용자명 + 비밀번호로 계정 생성.
+
+- 같은 매장 내 사용자명 중복 불가
+- 비밀번호 6자 이상, 사용자명 3~50자
+
+**Request Body**
+```json
+{
+  "storeId": 1,
+  "username": "newadmin",
+  "password": "pass1234"
+}
+```
+
+**Response 201**
+```json
+{
+  "id": 2,
+  "storeId": 1,
+  "username": "newadmin"
+}
+```
+
+**Error 409** — 사용자명 중복
+```json
+{
+  "status": 409,
+  "code": "USERNAME_DUPLICATE",
+  "message": "이미 존재하는 사용자명입니다",
+  "timestamp": "2026-03-05T10:00:00"
+}
+```
+
+---
+
 ### POST /api/auth/refresh
 Access Token 갱신. Refresh Token으로 새 Access Token 발급.
 

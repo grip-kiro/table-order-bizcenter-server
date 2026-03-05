@@ -37,6 +37,14 @@ public class AdminAccount extends BaseEntity {
     @Column(name = "failed_attempts", nullable = false)
     private int failedAttempts = 0;
 
+    public static AdminAccount create(Long storeId, String username, String passwordHash) {
+        AdminAccount account = new AdminAccount();
+        account.storeId = storeId;
+        account.username = username;
+        account.passwordHash = passwordHash;
+        return account;
+    }
+
     public void recordFailedAttempt(int maxAttempts, int lockMinutes) {
         this.failedAttempts++;
         if (this.failedAttempts >= maxAttempts) {

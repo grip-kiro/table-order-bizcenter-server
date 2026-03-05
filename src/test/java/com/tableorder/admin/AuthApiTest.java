@@ -120,4 +120,57 @@ class AuthApiTest {
                             """.formatted(rt)))
                 .andExpect(status().isUnauthorized());
     }
+
+    @Test
+    @Order(5)
+    @DisplayName("관리자 회원가입 성공")
+    void registerSuccess() throws Exception {
+        mockMvc.perform(post("/api/auth/admin/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                            {"storeId": %d, "username": "newadmin", "password": "pass1234"}
+                            """.formatted(storeId)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").isNumber())
+                .andExpect(jsonPath("$.storeId").value(storeId))
+                .andExpect(jsonPath("$.username").value("newadmin"));
+    }
+
+    @Test
+    @Order(6)
+    @DisplayName("회원가입 후 로그인 성공")
+    void loginAfterRegister() throws Exception {
+        mockMvc.perform(post("/api/auth/admin/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                            {"storeId": %d, "username": "newadmin", "password": "pass1234"}
+                            """.formatted(storeId)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.accessToken").isNotEmpty());
+    }
+
+    @Test
+    @Order(7)
+    @DisplayName("중복 사용자명 회원가입 → 실패")
+    void registerDuplicate() throws Exception {
+        mockMvc.perform(post("/api/auth/admin/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                            {"storeId": %d, "username": "admin", "password": "pass1234"}
+                            """.formatted(storeId)))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.code").value("USERNAME_DUPLICATE"));
+    }
+
+    @Test
+    @Order(8)
+    @DisplayName("짧은 비밀번호 회원가입 → 검증 실패")
+    void registerShortPassword() throws Exception {
+        mockMvc.perform(post("/api/auth/admin/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                            {"storeId": %d, "username": "test2", "password": "12"}
+                            """.formatted(storeId)))
+                .andExpect(status().isBadRequest());
+    }
 }

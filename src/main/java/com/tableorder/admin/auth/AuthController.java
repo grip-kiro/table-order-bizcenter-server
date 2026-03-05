@@ -1,10 +1,13 @@
 package com.tableorder.admin.auth;
 
 import com.tableorder.admin.auth.dto.AdminLoginRequest;
+import com.tableorder.admin.auth.dto.AdminRegisterRequest;
+import com.tableorder.admin.auth.dto.AdminRegisterResponse;
 import com.tableorder.admin.auth.dto.RefreshRequest;
 import com.tableorder.admin.auth.dto.TokenResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthService authService;
+
+    @PostMapping("/admin/register")
+    public ResponseEntity<AdminRegisterResponse> register(@Valid @RequestBody AdminRegisterRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(request));
+    }
 
     @PostMapping("/admin/login")
     public ResponseEntity<TokenResponse> login(@Valid @RequestBody AdminLoginRequest request) {
